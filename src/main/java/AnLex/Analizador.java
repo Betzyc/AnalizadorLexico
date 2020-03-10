@@ -8,13 +8,12 @@ package AnLex;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import AnLex.Linea;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author betzy
  */
-
 public class Analizador extends javax.swing.JFrame {
 
     char C[];
@@ -25,7 +24,9 @@ public class Analizador extends javax.swing.JFrame {
 
     public Analizador() {
         initComponents();
+
         this.setLocationRelativeTo(null);
+        txtPalabra.setText("{3*(7-6)-{3*7}-[6-3]}");
     }
 
     /**
@@ -84,6 +85,22 @@ public class Analizador extends javax.swing.JFrame {
                 {null, null, null},
                 {null, null, null},
                 {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
                 {null, null, null}
             },
             new String [] {
@@ -92,7 +109,11 @@ public class Analizador extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblTodo);
 
-        txtComent.setText("jTextField1");
+        txtComent.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtComentActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -123,11 +144,11 @@ public class Analizador extends javax.swing.JFrame {
                     .addComponent(btnBorrar)
                     .addComponent(btnLimpiar)
                     .addComponent(btnAnalizar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtComent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(8, 8, 8))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
 
         pack();
@@ -149,6 +170,13 @@ public class Analizador extends javax.swing.JFrame {
         aux = buscar();
         token = aux[0];
         vAd = aux[1];
+        
+        if(ValidarExpresion()){
+            JOptionPane.showMessageDialog(null, "La formula esta escrita correctamente");
+        } else{
+            JOptionPane.showMessageDialog(null, "Error formula esta escrita incorrectamente");
+        }
+        
         while (token != -1 && token != 0) {
             try {
                 guardar(token, vAd, indexAnterior);
@@ -166,6 +194,8 @@ public class Analizador extends javax.swing.JFrame {
             this.txtComent.setText("Terminado con exito...");
         }
         index = 0;
+        
+        
     }//GEN-LAST:event_btnAnalizarActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
@@ -184,9 +214,14 @@ public class Analizador extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
-    private boolean esEspacio(char x){
-        return x==' ' || x=='\t';
+    private void txtComentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtComentActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtComentActionPerformed
+
+    private boolean esEspacio(char x) {
+        return x == ' ' || x == '\t';
     }
+
     /**
      * @param args the command line arguments
      */
@@ -238,7 +273,7 @@ public class Analizador extends javax.swing.JFrame {
         if (index >= C.length) {
             return new int[]{0, 0};
         }
-        while(index < C.length && esEspacio(C[index])) {
+        while (index < C.length && esEspacio(C[index])) {
             index++;
         }
         char aux;
@@ -248,120 +283,120 @@ public class Analizador extends javax.swing.JFrame {
             return error();
         }
         switch (aux) {
-            case '<':{ //read print <<=>=<-->
-                if(++index<C.length){
-                    if(C[index]=='-'){
+            case '<': { //read print <<=>=<-->
+                if (++index < C.length) {
+                    if (C[index] == '-') {
                         index++;
-                        return new int[]{3, '<'+'-'};
+                        return new int[]{3, '<' + '-'};
                     }
-                    if(C[index]=='>'){
+                    if (C[index] == '>') {
                         index++;
-                        return new int[]{3, '<'+'>'};                        
+                        return new int[]{3, '<' + '>'};
                     }
-                    if(C[index]=='='){
+                    if (C[index] == '=') {
                         index++;
-                        return new int[]{3, '<'+'='};
+                        return new int[]{3, '<' + '='};
                     }
                 }
                 return new int[]{3, '<'};
             }
-            case '>':{
-                if(++index<C.length && C[index]=='='){
+            case '>': {
+                if (++index < C.length && C[index] == '=') {
                     index++;
-                    return new int[]{3, '>'+'='};
+                    return new int[]{3, '>' + '='};
                 }
                 return new int[]{3, '>'};
             }
-            case '=':{
+            case '=': {
                 index++;
                 return new int[]{3, '='};
             }
-            case '+':{
+            case '+': {
                 index++;
-                return new int[]{3, '+'};                
+                return new int[]{3, '+'};
             }
-            case '-':{
+            case '-': {
                 index++;
-                if(index<C.length && C[index]=='>'){
+                if (index < C.length && C[index] == '>') {
                     index++;
-                    return new int[]{3, '-'+'>'};
+                    return new int[]{3, '-' + '>'};
                 }
                 return new int[]{3, '-'};
-            }            
-            case '*':{
-                index++;
-                return new int[]{3, '*'};                
             }
-            case '/':{
+            case '*': {
                 index++;
-                if (index < C.length && C[index]=='/') {
-                    while(index<C.length){
+                return new int[]{3, '*'};
+            }
+            case '/': {
+                index++;
+                if (index < C.length && C[index] == '/') {
+                    while (index < C.length) {
                         index++;
                     }
                     return new int[]{1, 0};
                 }
                 return new int[]{3, '/'};
             }
-            case '%':{
+            case '%': {
                 index++;
                 return new int[]{3, '%'};
             }
-            case '&':{
+            case '&': {
                 index++;
                 return new int[]{3, '&'};
             }
-            case '|':{
+            case '|': {
                 index++;
                 return new int[]{3, '|'};
             }
-            case '¬':{
+            case '¬': {
                 index++;
                 return new int[]{3, '¬'};
             }
-            case ',':{
+            case ',': {
                 index++;
                 return new int[]{2, ','};
             }
-            case ':':{
+            case ':': {
                 index++;
                 return new int[]{2, ':'};
             }
-            case '$':{
+            case '$': {
                 index++;
                 return new int[]{2, '$'};
             }
-            case ')':{
+            case ')': {
                 index++;
                 return new int[]{2, ')'};
             }
-            case '[':{
+            case '[': {
                 index++;
                 return new int[]{2, '['};
             }
-            case ']':{
+            case ']': {
                 index++;
                 return new int[]{2, ']'};
             }
-            case '{':{
+            case '{': {
                 index++;
                 return new int[]{2, '{'};
             }
-            case '}':{
+            case '}': {
                 index++;
                 return new int[]{2, '}'};
             }
-            case '\'':{
+            case '\'': {
                 index++;
-                if(++index<C.length && C[index]=='\''){
+                if (++index < C.length && C[index] == '\'') {
                     index++;
                     return new int[]{502, 0};
                 }
                 return error();
             }
-            case '\"':{
-                while(++index<C.length && C[index]!='\"'){
+            case '\"': {
+                while (++index < C.length && C[index] != '\"') {
                 }
-                if(index<C.length){
+                if (index < C.length) {
                     index++;
                     return new int[]{503, 0};
                 }
@@ -414,12 +449,12 @@ public class Analizador extends javax.swing.JFrame {
                 break;
             }
         }
-        
-        if(Character.isAlphabetic(aux) || aux=='_'){
+
+        if (Character.isAlphabetic(aux) || aux == '_') {
             if (++index < C.length && ((C[index] >= 'a' && C[index] <= 'z')
                     || (C[index] >= 'A' && C[index] <= 'Z')
                     || Character.isDigit(C[index]))
-                    && !esEspacio(C[index])){
+                    && !esEspacio(C[index])) {
                 while (++index < C.length && ((C[index] >= 'a' && C[index] <= 'z')
                         || (C[index] >= 'A' && C[index] <= 'Z')
                         || Character.isDigit(C[index]))
@@ -431,9 +466,9 @@ public class Analizador extends javax.swing.JFrame {
         if (Character.isDigit(aux)) {
             while (++index < C.length && Character.isDigit(C[index])) {
             }
-            if (index <C.length && C[index] == '.') {//var a, b<-9.23, c<-3:float
+            if (index < C.length && C[index] == '.') {//var a, b<-9.23, c<-3:float
                 if (++index < C.length && Character.isDigit(C[index])) {
-                    while (++index < C.length && Character.isDigit(C[index])){
+                    while (++index < C.length && Character.isDigit(C[index])) {
                     }
                     return new int[]{501, 0};
                 } else {
@@ -449,19 +484,19 @@ public class Analizador extends javax.swing.JFrame {
             return error();
         }
     }
-    
-     private int[] error() {
+
+    private int[] error() {
         this.txtComent.setText("Para por error...");
         return new int[]{-1, 0};
     }
 
     private void guardar(int token, int vAd, int indexAnt) throws IOException, ClassNotFoundExeption {
         // throw new UnsupportedOperationException("Not supported yet.");
-        String desc= ""; //descripcion
-        String dato= "";
-        for(int i=indexAnt; i< index; i++){
-            if(!esEspacio(C[i])){
-                dato+=String.valueOf(C[i]);
+        String desc = ""; //descripcion
+        String dato = "";
+        for (int i = indexAnt; i < index; i++) {
+            if (!esEspacio(C[i])) {
+                dato += String.valueOf(C[i]);
             }
         }
         switch (token) {
@@ -469,123 +504,123 @@ public class Analizador extends javax.swing.JFrame {
                 System.out.println("Hubo un comentario...");
                 return;
             }
-            
+
             case 2: {
                 desc = "Simbolo: ";
-                switch(vAd){
-                    case ':':{
-                        desc+="Dos puntos";
+                switch (vAd) {
+                    case ':': {
+                        desc += "Dos puntos";
                         break;
                     }
-                    case ',':{
-                        desc+="Coma";
+                    case ',': {
+                        desc += "Coma";
                         break;
                     }
-                    case '$':{
-                        desc+="Separador de sentencias for";
+                    case '$': {
+                        desc += "Separador de sentencias for";
                         break;
                     }
-                    case '#':{
-                        desc+="Protegido";
+                    case '#': {
+                        desc += "Protegido";
                         break;
                     }
-                    case '(':{
-                        desc+="Abre parentesis";
+                    case '(': {
+                        desc += "Abre parentesis";
                         break;
                     }
-                    case ')':{
-                        desc+="Cierra parentesis";
+                    case ')': {
+                        desc += "Cierra parentesis";
                         break;
                     }
-                    case '[':{
-                        desc+="Abre corchetes";
+                    case '[': {
+                        desc += "Abre corchetes";
                         break;
                     }
-                    case ']':{
-                        desc+="Cierra corchetes";
+                    case ']': {
+                        desc += "Cierra corchetes";
                         break;
                     }
-                    case '{':{
-                        desc+="Abre llaves";
+                    case '{': {
+                        desc += "Abre llaves";
                         break;
                     }
-                    case '}':{
-                        desc+="Cierra llaves";
+                    case '}': {
+                        desc += "Cierra llaves";
                         break;
                     }
                 }
-                token+=vAd;
+                token += vAd;
                 break;
             }
             case 3: {
-                desc="Operador ";
-                switch(vAd){
-                    case '<':{
+                desc = "Operador ";
+                switch (vAd) {
+                    case '<': {
                         desc += "relacional: Menor";
                         break;
                     }
-                    case '<'+'=':{
+                    case '<' + '=': {
                         desc += "relacional: Menor o igual";
                         break;
                     }
-                    case '>':{
+                    case '>': {
                         desc += "relacional: Mayor";
                         break;
                     }
-                    case '>'+'=':{
+                    case '>' + '=': {
                         desc += "relacional: Mayor o igual";
                         break;
                     }
-                    case '<'+'>':{
+                    case '<' + '>': {
                         desc += "relacional: Diferente";
                         break;
                     }
-                    case '=':{
+                    case '=': {
                         desc += "relacional: Igual";
                         break;
                     }
-                    case '+':{
+                    case '+': {
                         desc += "aritmetico: Suma (publico)";
                         break;
                     }
-                    case '-':{
+                    case '-': {
                         desc += "aritmetico: Resta (privado)";
                         break;
                     }
-                    case '*':{
+                    case '*': {
                         desc += "aritmetico: Multiplicacion";
                         break;
                     }
-                    case '/':{
+                    case '/': {
                         desc += "aritmetico: Division";
                         break;
                     }
-                    case '%':{
+                    case '%': {
                         desc += "aritmetico: Resto de la division";
                         break;
                     }
-                    case '&':{
+                    case '&': {
                         desc += "logico: AND";
                         break;
                     }
-                    case '|':{
+                    case '|': {
                         desc += "logico: OR";
                         break;
                     }
-                    case '¬':{
+                    case '¬': {
                         desc += "logico: NOT";
                         break;
                     }
-                    case '<'+'-':{
+                    case '<' + '-': {
                         desc += "de Asignacion";
                         break;
                     }
-                    case '-'+'>':{
+                    case '-' + '>': {
                         desc += "de Acceso";
                         break;
                     }
                 }
-                token+=vAd;
+                token += vAd;
                 break;
             }
             case 500: {
@@ -609,17 +644,18 @@ public class Analizador extends javax.swing.JFrame {
                 return;
             }
         }
-         // token, des, lexema
+        // token, des, lexema
         this.tblTodo.setValueAt(String.valueOf(token), this.filaTodo, 0);
         this.tblTodo.setValueAt(String.valueOf(desc), this.filaTodo, 1);
         this.tblTodo.setValueAt(dato, this.filaTodo, 2);
         filaTodo++;
     }
+
     private boolean esEspacio(char x, char[] extra) {
-        boolean t= x == ' ';
-        if(!t){
-            for(char aux:extra){
-                if(x==aux){
+        boolean t = x == ' ';
+        if (!t) {
+            for (char aux : extra) {
+                if (x == aux) {
                     return true;
                 }
             }
@@ -627,7 +663,39 @@ public class Analizador extends javax.swing.JFrame {
         }
         return true;
     }
-    
+
+    public boolean ValidarExpresion() {
+        Pila pila = new Pila();
+        String cadena = txtPalabra.getText();
+
+        for (int i = 0; i < cadena.length(); i++) {
+            if (cadena.charAt(i) == '(' || cadena.charAt(i) == '[' || cadena.charAt(i) == '{') {
+                pila.Insertar(cadena.charAt(i));
+            } else {
+                if (cadena.charAt(i) == ')') {
+                    if (pila.extraer() != '(') {
+                        return false;
+                    }
+                } else {
+                    if (cadena.charAt(i) == ']') {
+                        if (pila.extraer() != '[') {
+                            return false;
+                        }
+
+                    } else {
+                        if (cadena.charAt(i) == '}') {
+                            if (pila.extraer() != '{') {
+                                return false;
+                            }
+                        }
+
+                    }
+                }
+            }
+            
+        }
+        return pila.PilaVacia();
+    }
     /*private Integer seEncuentra(String Id){
         String aux;
         for(int i=0; i<numID; i++){
